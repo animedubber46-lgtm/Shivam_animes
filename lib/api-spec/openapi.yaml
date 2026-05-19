@@ -1,22 +1,35 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Shivam Animes Premium Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: admin
+    description: Admin operations
+  - name: anime
+    description: Anime management
+  - name: episodes
+    description: Episode management
+  - name: users
+    description: User management
+  - name: solvelinks
+    description: Solve link management
+  - name: analytics
+    description: Analytics
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +37,1065 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # Admin Auth
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Admin login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # Admin Users
+  /admin/users:
+    get:
+      operationId: listUsers
+      tags: [admin]
+      summary: List all users
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer }
+        - name: limit
+          in: query
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+    post:
+      operationId: createUser
+      tags: [admin]
+      summary: Create a premium user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/users/{id}:
+    get:
+      operationId: getUser
+      tags: [admin]
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateUser
+      tags: [admin]
+      summary: Update user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      operationId: deleteUser
+      tags: [admin]
+      summary: Delete user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users/{id}/reset-device:
+    post:
+      operationId: resetUserDevice
+      tags: [admin]
+      summary: Reset user device lock
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Device reset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users/{id}/force-logout:
+    post:
+      operationId: forceLogoutUser
+      tags: [admin]
+      summary: Force logout user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: User logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users/generate:
+    post:
+      operationId: generateUser
+      tags: [admin]
+      summary: Generate random user credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateUserInput"
+      responses:
+        "201":
+          description: Generated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # Anime
+  /anime:
+    get:
+      operationId: listAnime
+      tags: [anime]
+      summary: List anime
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: genre
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer }
+        - name: limit
+          in: query
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Anime list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnimeListResponse"
+    post:
+      operationId: createAnime
+      tags: [anime]
+      summary: Create anime (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnimeInput"
+      responses:
+        "201":
+          description: Anime created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Anime"
+
+  /anime/featured:
+    get:
+      operationId: getFeaturedAnime
+      tags: [anime]
+      summary: Get featured/trending anime
+      responses:
+        "200":
+          description: Featured anime
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Anime"
+
+  /anime/recent:
+    get:
+      operationId: getRecentAnime
+      tags: [anime]
+      summary: Get recently added anime
+      responses:
+        "200":
+          description: Recent anime
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Anime"
+
+  /anime/{id}:
+    get:
+      operationId: getAnime
+      tags: [anime]
+      summary: Get anime by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Anime
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnimeWithEpisodes"
+    patch:
+      operationId: updateAnime
+      tags: [anime]
+      summary: Update anime (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnimeUpdate"
+      responses:
+        "200":
+          description: Updated anime
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Anime"
+    delete:
+      operationId: deleteAnime
+      tags: [anime]
+      summary: Delete anime (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # Episodes
+  /anime/{animeId}/episodes:
+    get:
+      operationId: listEpisodes
+      tags: [episodes]
+      summary: List episodes for an anime
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Episodes list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Episode"
+    post:
+      operationId: createEpisode
+      tags: [episodes]
+      summary: Create episode (admin)
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EpisodeInput"
+      responses:
+        "201":
+          description: Episode created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episode"
+
+  /anime/{animeId}/episodes/{episodeId}:
+    patch:
+      operationId: updateEpisode
+      tags: [episodes]
+      summary: Update episode (admin)
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: episodeId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EpisodeUpdate"
+      responses:
+        "200":
+          description: Updated episode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episode"
+    delete:
+      operationId: deleteEpisode
+      tags: [episodes]
+      summary: Delete episode (admin)
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: episodeId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /episodes/{episodeId}/access:
+    post:
+      operationId: accessEpisode
+      tags: [episodes]
+      summary: Get secure redirect token for episode
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Secure redirect token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EpisodeAccessResponse"
+        "403":
+          description: Not premium
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /redirect/{token}:
+    get:
+      operationId: redirectEpisode
+      tags: [episodes]
+      summary: Redirect to episode destination via token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "302":
+          description: Redirect to destination
+
+  # Solve Links
+  /solve-links:
+    get:
+      operationId: listSolveLinks
+      tags: [solvelinks]
+      summary: List solve links (non-Indian users)
+      responses:
+        "200":
+          description: Solve links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SolveLink"
+    post:
+      operationId: createSolveLink
+      tags: [solvelinks]
+      summary: Create solve link (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolveLinkInput"
+      responses:
+        "201":
+          description: Solve link created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SolveLink"
+
+  /solve-links/{id}:
+    patch:
+      operationId: updateSolveLink
+      tags: [solvelinks]
+      summary: Update solve link (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolveLinkUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SolveLink"
+    delete:
+      operationId: deleteSolveLink
+      tags: [solvelinks]
+      summary: Delete solve link (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # User features
+  /user/favorites:
+    get:
+      operationId: getFavorites
+      tags: [users]
+      summary: Get user favorites
+      responses:
+        "200":
+          description: Favorites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Anime"
+    post:
+      operationId: addFavorite
+      tags: [users]
+      summary: Add anime to favorites
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoriteInput"
+      responses:
+        "200":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /user/favorites/{animeId}:
+    delete:
+      operationId: removeFavorite
+      tags: [users]
+      summary: Remove anime from favorites
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /user/history:
+    get:
+      operationId: getWatchHistory
+      tags: [users]
+      summary: Get watch history
+      responses:
+        "200":
+          description: Watch history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WatchHistoryItem"
+
+  # Analytics
+  /admin/analytics:
+    get:
+      operationId: getAnalytics
+      tags: [analytics]
+      summary: Get dashboard analytics
+      responses:
+        "200":
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analytics"
+
+  /admin/activity-logs:
+    get:
+      operationId: getActivityLogs
+      tags: [analytics]
+      summary: Get activity logs
+      parameters:
+        - name: userId
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer }
+        - name: limit
+          in: query
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Activity logs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityLogListResponse"
+
+  /admin/sessions:
+    get:
+      operationId: getActiveSessions
+      tags: [analytics]
+      summary: Get active sessions
+      responses:
+        "200":
+          description: Active sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+
+  /admin/sessions/{sessionId}:
+    delete:
+      operationId: deleteSession
+      tags: [analytics]
+      summary: Terminate a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Session terminated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
-        status:
-          type: string
-      required:
-        - status
+        status: { type: string }
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+
+    LoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+        deviceId: { type: string }
+        deviceInfo: { type: string }
+
+    AdminLoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token: { type: string }
+        user:
+          $ref: "#/components/schemas/UserProfile"
+
+    UserProfile:
+      type: object
+      required: [id, username, role]
+      properties:
+        id: { type: string }
+        username: { type: string }
+        role: { type: string }
+        isPremium: { type: boolean }
+        premiumExpiresAt: { type: ["string", "null"] }
+        isActive: { type: boolean }
+
+    User:
+      type: object
+      required: [id, username, role, isPremium, isActive, createdAt]
+      properties:
+        id: { type: string }
+        username: { type: string }
+        role: { type: string }
+        isPremium: { type: boolean }
+        premiumExpiresAt: { type: ["string", "null"] }
+        premiumDays: { type: ["integer", "null"] }
+        isActive: { type: boolean }
+        isSuspended: { type: boolean }
+        deviceId: { type: ["string", "null"] }
+        lastIp: { type: ["string", "null"] }
+        lastCountry: { type: ["string", "null"] }
+        lastActiveAt: { type: ["string", "null"] }
+        loginCount: { type: integer }
+        createdAt: { type: string }
+
+    UserListResponse:
+      type: object
+      required: [users, total, page, limit]
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    UserInput:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+        isPremium: { type: boolean }
+        premiumDays: { type: integer }
+
+    UserUpdate:
+      type: object
+      properties:
+        isPremium: { type: boolean }
+        premiumDays: { type: integer }
+        premiumExpiresAt: { type: ["string", "null"] }
+        isSuspended: { type: boolean }
+        isActive: { type: boolean }
+
+    GenerateUserInput:
+      type: object
+      required: [premiumDays]
+      properties:
+        username: { type: ["string", "null"] }
+        password: { type: ["string", "null"] }
+        premiumDays: { type: integer }
+
+    Anime:
+      type: object
+      required: [id, title, status, createdAt]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        genres: { type: array, items: { type: string } }
+        tags: { type: array, items: { type: string } }
+        releaseYear: { type: ["integer", "null"] }
+        bannerImage: { type: ["string", "null"] }
+        coverImage: { type: ["string", "null"] }
+        status: { type: string }
+        episodeCount: { type: integer }
+        viewCount: { type: integer }
+        createdAt: { type: string }
+
+    AnimeWithEpisodes:
+      type: object
+      required: [id, title, status, createdAt, episodes]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        genres: { type: array, items: { type: string } }
+        tags: { type: array, items: { type: string } }
+        releaseYear: { type: ["integer", "null"] }
+        bannerImage: { type: ["string", "null"] }
+        coverImage: { type: ["string", "null"] }
+        status: { type: string }
+        episodeCount: { type: integer }
+        viewCount: { type: integer }
+        createdAt: { type: string }
+        episodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Episode"
+
+    AnimeListResponse:
+      type: object
+      required: [anime, total, page, limit]
+      properties:
+        anime:
+          type: array
+          items:
+            $ref: "#/components/schemas/Anime"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    AnimeInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        genres: { type: array, items: { type: string } }
+        tags: { type: array, items: { type: string } }
+        releaseYear: { type: integer }
+        bannerImage: { type: string }
+        coverImage: { type: string }
+        status: { type: string }
+
+    AnimeUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        genres: { type: array, items: { type: string } }
+        tags: { type: array, items: { type: string } }
+        releaseYear: { type: integer }
+        bannerImage: { type: string }
+        coverImage: { type: string }
+        status: { type: string }
+
+    Episode:
+      type: object
+      required: [id, animeId, episodeNumber, title, createdAt]
+      properties:
+        id: { type: string }
+        animeId: { type: string }
+        episodeNumber: { type: integer }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        thumbnail: { type: ["string", "null"] }
+        order: { type: integer }
+        createdAt: { type: string }
+
+    EpisodeInput:
+      type: object
+      required: [episodeNumber, title, destinationUrl]
+      properties:
+        episodeNumber: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        thumbnail: { type: string }
+        destinationUrl: { type: string }
+        order: { type: integer }
+
+    EpisodeUpdate:
+      type: object
+      properties:
+        episodeNumber: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        thumbnail: { type: string }
+        destinationUrl: { type: string }
+        order: { type: integer }
+
+    EpisodeAccessResponse:
+      type: object
+      required: [redirectUrl]
+      properties:
+        redirectUrl: { type: string }
+
+    SolveLink:
+      type: object
+      required: [id, title, url, createdAt]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        imageUrl: { type: ["string", "null"] }
+        url: { type: string }
+        clickCount: { type: integer }
+        createdAt: { type: string }
+
+    SolveLinkInput:
+      type: object
+      required: [title, url]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: string }
+        url: { type: string }
+
+    SolveLinkUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: string }
+        url: { type: string }
+
+    FavoriteInput:
+      type: object
+      required: [animeId]
+      properties:
+        animeId: { type: string }
+
+    WatchHistoryItem:
+      type: object
+      required: [animeId, episodeId, watchedAt]
+      properties:
+        animeId: { type: string }
+        animeTitle: { type: string }
+        animeCover: { type: ["string", "null"] }
+        episodeId: { type: string }
+        episodeTitle: { type: string }
+        episodeNumber: { type: integer }
+        watchedAt: { type: string }
+
+    Analytics:
+      type: object
+      required: [totalUsers, premiumUsers, activeToday, totalAnime, totalEpisodes]
+      properties:
+        totalUsers: { type: integer }
+        premiumUsers: { type: integer }
+        activeToday: { type: integer }
+        onlineNow: { type: integer }
+        totalAnime: { type: integer }
+        totalEpisodes: { type: integer }
+        totalRedirects: { type: integer }
+        recentSignups: { type: integer }
+        topAnime:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnimeStats"
+        countryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountryStat"
+
+    AnimeStats:
+      type: object
+      required: [animeId, title, viewCount]
+      properties:
+        animeId: { type: string }
+        title: { type: string }
+        viewCount: { type: integer }
+
+    CountryStat:
+      type: object
+      required: [country, count]
+      properties:
+        country: { type: string }
+        count: { type: integer }
+
+    ActivityLog:
+      type: object
+      required: [id, userId, username, type, createdAt]
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        username: { type: string }
+        type: { type: string }
+        description: { type: ["string", "null"] }
+        ip: { type: ["string", "null"] }
+        country: { type: ["string", "null"] }
+        deviceInfo: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    ActivityLogListResponse:
+      type: object
+      required: [logs, total, page, limit]
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityLog"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    Session:
+      type: object
+      required: [id, userId, username, createdAt]
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        username: { type: string }
+        ip: { type: ["string", "null"] }
+        country: { type: ["string", "null"] }
+        deviceInfo: { type: ["string", "null"] }
+        lastActiveAt: { type: string }
+        createdAt: { type: string }

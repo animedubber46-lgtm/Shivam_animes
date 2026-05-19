@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "SHIVAM ANIMES WEB FOR PREMIUM USERS"
+version = "1.0.0"
+id = "artifacts/shivam-animes"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24095
+
+[services.development]
+run = "pnpm --filter @workspace/shivam-animes run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/shivam-animes", "run", "build" ]
+publicDir = "artifacts/shivam-animes/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24095"
+BASE_PATH = "/"

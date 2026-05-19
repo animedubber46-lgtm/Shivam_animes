@@ -1,44 +1,67 @@
-# [Project name]
+# SHIVAM ANIMES WEB FOR PREMIUM USERS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A full-stack premium anime access platform with dark futuristic neon UI (black + purple), JWT auth, one-device login enforcement, admin dashboard, anime CMS, protected episode redirect links, solve-link page (non-Indian users only), premium user management, and activity tracking.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, served at /api)
+- `pnpm --filter @workspace/shivam-animes run dev` — run the React frontend
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `MONGODB_URI`, `JWT_SECRET`, `SESSION_SECRET`
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
+- API: Express 5, MongoDB + Mongoose, JWT (jsonwebtoken), bcryptjs
+- Frontend: React + Vite, TanStack Query, wouter, Tailwind CSS v4
+- API codegen: Orval (from OpenAPI spec at `lib/api-spec/openapi.yaml`)
 - Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/api-server/src/routes/` — all Express route handlers (auth, anime, episodes, users, solveLinks, userFeatures, analytics)
+- `artifacts/api-server/src/models/` — Mongoose models (User, Anime, Episode, Session, ActivityLog, SolveLink, WatchHistory)
+- `artifacts/api-server/src/middlewares/auth.ts` — JWT auth middleware (requireAuth, requirePremium, requireAdmin)
+- `artifacts/api-server/src/lib/mongodb.ts` — MongoDB connection
+- `artifacts/api-server/src/lib/activity.ts` — Activity logging helper
+- `artifacts/shivam-animes/src/pages/` — all frontend pages (home, login, browse, anime-detail, dashboard, favorites, solve-link, premium, admin/*)
+- `artifacts/shivam-animes/src/context/AuthContext.tsx` — JWT auth context
+- `lib/api-spec/openapi.yaml` — OpenAPI contract (source of truth for all API types)
+- `lib/api-client-react/src/generated/api.ts` — generated React Query hooks
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- MongoDB/Mongoose used instead of PostgreSQL/Drizzle for this project (the `@workspace/db` Drizzle lib in the monorepo is NOT imported by api-server)
+- One-device login: `deviceId` stored on User; login from second device is blocked unless admin resets it via `POST /admin/users/:id/reset-device`
+- Episode redirect: User calls `POST /api/episodes/:id/access` → gets a short-lived JWT token → `GET /api/redirect/:token` validates and 302-redirects to the real destination URL (never exposed to frontend)
+- Solve Link page: geo-blocked for Indian users (IN country code) using ipapi.co
+- Admin bootstrap: first login with `ADMIN_USERNAME=PremiumWeb` / `ADMIN_PASSWORD=SHIVAMKIT` creates the admin account
+- Rate limiting: 200 req/15min global, 20 req/15min on login endpoints
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Premium anime browsing platform with neon dark UI
+- User login with one-device enforcement and JWT auth
+- Premium subscription management (15 days / 1 month) via Telegram + QR payment
+- Protected episode access via secure redirect (destination URL never leaked to browser)
+- Admin panel: manage users, anime CMS, episodes, solve links, activity logs, live sessions
+- Favorites and watch history tracking for premium users
+- Solve Link page (non-India only) for monetized redirect links
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Admin credentials: username `PremiumWeb`, password `SHIVAMKIT`
+- UI: dark black background, neon purple (#a855f7) and electric cyan (#06b6d4) accents
+- Telegram channel for premium purchases: https://t.me/A_Gatherers_isekai_In_Hindi
+- Premium pricing: ₹10 for 15 days, ₹19 for 1 month
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Do NOT use `DATABASE_URL` or Drizzle/Postgres for this project — it uses MongoDB via `MONGODB_URI`
+- Episode `destinationUrl` is intentionally omitted from the API OpenAPI spec and generated types — it's only used server-side
+- Trust proxy is set to `1` in app.ts to fix express-rate-limit with X-Forwarded-For header in proxied environments
+- Run `pnpm --filter @workspace/api-spec run codegen` after editing `lib/api-spec/openapi.yaml`
 
 ## Pointers
 
