@@ -1,0 +1,571 @@
+Create an ultra-modern, highly secure, production-ready full-stack premium anime access platform named **“SHIVAM ANIMES WEB FOR PREMIUM USERS”** using:
+
+* Next.js 15 (App Router)
+* TypeScript
+* Tailwind CSS
+* MongoDB Atlas
+* JWT Authentication
+* Node.js API Routes
+* Framer Motion
+* Secure Middleware
+* Vercel Deployment
+
+The website MUST be fully deploy-ready for **Vercel** and optimized for performance, security, scalability, and modern UI/UX.
+
+==================================================
+🌐 PROJECT PURPOSE
+==================
+
+Build a premium anime episode access platform where:
+
+* Admin controls premium users
+* Premium users can access anime episode destination links
+* Anime episode links remain protected and hidden
+* Users can login on ONLY one device
+* Non-Indian users can access a Solve Link system
+* Indian users cannot access Solve Link page
+* Admin can monitor all user activity
+* Entire platform is secured against bypass attempts
+
+IMPORTANT:
+The website DOES NOT stream videos internally.
+
+Instead:
+
+* Admin adds protected destination links for episodes
+* Users click episode buttons
+* Backend validates access
+* User is redirected securely to destination link
+* Original destination URL remains hidden
+
+==================================================
+🎨 WEBSITE DESIGN
+=================
+
+Website Name:
+SHIVAM ANIMES WEB FOR PREMIUM USERS
+
+Theme:
+
+* Dark futuristic anime UI
+* Black + purple neon aesthetic
+* Glassmorphism effects
+* Premium luxury appearance
+* Fully responsive mobile + desktop
+* Smooth transitions and animations
+* Anime-inspired background effects
+
+Add:
+
+* Animated particles
+* Neon glow hover effects
+* Animated loading screen
+* Smooth route transitions
+* Modern premium dashboard UI
+
+==================================================
+🖼 BRANDING & LOGO
+==================
+
+Website Logo:
+https://4kwallpapers.com/images/walls/thumbs_2t/22996.jpg
+
+Use logo in:
+
+* Navbar
+* Login page
+* Splash screen
+* Loader
+* Favicon
+* Admin dashboard
+
+==================================================
+🚀 DEPLOYMENT (IMPORTANT)
+=========================
+
+The project MUST be fully deploy-ready for:
+
+* Vercel
+* MongoDB Atlas
+
+Generate:
+
+* vercel.json
+* .env.example
+* README.md
+* Production-ready folder structure
+* Optimized API routes
+* Edge middleware
+
+README.md must include:
+
+1. Installation steps
+2. MongoDB Atlas setup
+3. JWT setup
+4. Environment variables
+5. Vercel deployment steps
+6. Security recommendations
+7. Custom domain setup
+
+Environment Variables Example:
+
+* MONGODB_URI=
+* JWT_SECRET=
+* NEXTAUTH_SECRET=
+* ADMIN_USERNAME=
+* ADMIN_PASSWORD=
+
+==================================================
+🔐 ADMIN / OWNER SYSTEM
+=======================
+
+Create a secure Admin dashboard.
+
+Default Admin Credentials:
+Username: PremiumWeb
+Password: SHIVAMKIT
+
+Admin Dashboard Features:
+
+* Secure login
+* Dashboard analytics
+* Total users
+* Active premium users
+* Recently active users
+* Anime management
+* Premium management
+* Device lock management
+* Activity logs
+* Solve link manager
+* Revenue tracking
+* Session management
+
+Admin Security:
+
+* bcrypt password hashing
+* HTTP-only JWT cookies
+* CSRF protection
+* Rate limiting
+* Session expiration
+* Secure middleware
+* Hidden admin routes
+* API validation
+
+==================================================
+👑 PREMIUM USER MANAGEMENT
+==========================
+
+Admin can:
+
+* Generate RANDOM usernames/passwords
+* Generate CUSTOM usernames/passwords
+* Set premium durations:
+
+  * 15 Days
+  * 1 Month
+  * Custom duration
+* Extend premium
+* Suspend users
+* Delete users
+* Reset user device locks
+* Force logout users
+* Monitor user sessions
+
+Store all data securely in MongoDB Atlas.
+
+==================================================
+📱 ONE DEVICE LOGIN SYSTEM
+==========================
+
+IMPORTANT FEATURE:
+
+A premium user can login on ONLY ONE DEVICE.
+
+Implement:
+
+* Browser/device fingerprinting
+* Device ID validation
+* Session fingerprint storage
+* Login session locking
+
+If another device attempts login:
+
+* Reject access
+* Show:
+  “Account already active on another device.”
+
+Admin can:
+
+* Reset device lock manually
+* View device information
+* Force session resets
+
+==================================================
+🎥 ADVANCED ANIME MANAGEMENT SYSTEM
+===================================
+
+Create a full Anime CMS inside Admin Dashboard.
+
+Admin can:
+
+* Add anime title
+* Add anime description
+* Add genres
+* Add tags
+* Add release year
+* Add anime banner
+* Add cover image
+* Add status:
+
+  * Ongoing
+  * Completed
+
+==================================================
+🔗 EPISODE MANAGEMENT SYSTEM
+============================
+
+IMPORTANT:
+The website DOES NOT stream videos directly.
+
+Each episode contains:
+
+* Episode Number
+* Episode Title
+* Protected Destination Link Button
+
+Admin can:
+
+* Add Episode
+* Edit Episode
+* Delete Episode
+* Rearrange episode order
+* Add protected destination URLs
+
+User Flow:
+
+1. User clicks episode button
+2. Backend validates premium access
+3. Backend generates encrypted temporary token
+4. Activity gets logged
+5. User redirects securely to destination link
+
+==================================================
+🔒 ADVANCED LINK PROTECTION SYSTEM
+==================================
+
+VERY IMPORTANT:
+
+Original episode destination links must NEVER be exposed publicly.
+
+Implement:
+
+* Backend redirect proxy system
+* Temporary encrypted redirect tokens
+* Signed expiring URLs
+* Redirect middleware validation
+* Hidden API structure
+* Obfuscated route handling
+
+Prevent:
+
+* Direct access to destination links
+* Link sharing
+* Unauthorized redirects
+* Bypass attempts
+
+Disable:
+
+* Right click
+* Text selection
+* Copy
+* Paste
+* Dragging
+* CTRL+C
+* CTRL+U
+* CTRL+S
+* F12
+* Inspect shortcuts
+
+Add:
+
+* Devtools detection
+* Blur UI when inspect detected
+* Session invalidation on suspicious activity
+
+==================================================
+🌍 SOLVE LINK PAGE (NON-INDIAN USERS ONLY)
+==========================================
+
+Create:
+/solve-link
+
+Purpose:
+Users outside India can unlock content through monetized short links.
+
+Rules:
+
+* Detect country using IP geolocation
+* ONLY non-Indian users can access
+* Indian users must see:
+  “Solve Link is not available in your region.”
+
+Admin can add:
+
+* Post title
+* Post image
+* Description
+* Monetized shortener URL
+
+When users click:
+
+* Redirect to admin-added shortener link
+
+Also show:
+
+* Recently added posts
+* Trending solve posts
+
+==================================================
+💳 PREMIUM PAYMENT PAGE
+=======================
+
+Add “Buy Premium” button above login page.
+
+When clicked:
+Open premium purchase page/popup.
+
+Premium Plans:
+
+* 15 Days Premium = ₹10
+* 1 Month Premium = ₹19
+
+QR Image:
+https://ibb.co/NnL17w3t
+
+==================================================
+📲 TELEGRAM CONTACT BUTTON
+==========================
+
+Under QR payment image add:
+
+Button Text:
+“Contact on Telegram for Premium”
+
+Telegram Deep Link:
+https://t.me/A_Gatherers_isekai_In_Hindi
+
+Fallback URL:
+https://t.me/A_Gatherers_isekai_In_Hindi
+
+Features:
+
+* Telegram icon
+* Neon glow button
+* Smooth animations
+* Mobile + desktop compatible
+
+==================================================
+📺 USER FEATURES
+================
+
+Premium users can:
+
+* Browse anime
+* Search anime
+* Access protected episodes
+* Continue watching history
+* Save favorites
+* View recently added anime
+
+Non-premium users:
+
+* Cannot access episode links
+* Redirected to Buy Premium page
+
+==================================================
+📊 ADVANCED USER TRACKING SYSTEM
+================================
+
+Admin must be able to monitor ALL user activities.
+
+Track:
+
+* Username
+* Password created
+* Premium status
+* Login history
+* Logout history
+* Device used
+* Browser information
+* IP address
+* Country
+* Last active time
+* Anime clicks
+* Episode clicks
+* Redirect history
+* Solve link usage
+* Session duration
+* Failed login attempts
+
+Create:
+
+* Activity Logs page
+* Live user sessions dashboard
+* Real-time analytics
+
+==================================================
+👁 ADMIN MONITORING FEATURES
+============================
+
+Admin can anytime view:
+
+* All created usernames
+* All created passwords
+* Premium expiration dates
+* User device information
+* User activity logs
+* Online users
+* Redirect history
+* Suspicious activities
+
+Add:
+
+* Search users
+* Filter users
+* Ban users
+* Reset sessions
+* Export user data
+
+==================================================
+📈 LIVE ANALYTICS DASHBOARD
+===========================
+
+Create real-time analytics dashboard showing:
+
+* Active users
+* Current clicks
+* Redirect requests
+* Most viewed anime
+* Country traffic
+* Premium sales
+* User growth
+
+Use:
+
+* MongoDB analytics storage
+* Dynamic charts
+* Live polling or WebSockets
+
+==================================================
+🛡 ADVANCED SECURITY SYSTEM
+===========================
+
+Implement:
+
+* MongoDB injection protection
+* XSS protection
+* CSRF protection
+* Helmet security headers
+* API request validation
+* JWT authentication
+* HTTP-only cookies
+* Session verification
+* Token expiration
+* Anti hotlink protection
+* Rate limiting
+* Device mismatch detection
+* Suspicious activity detection
+* Auto logout system
+* Hidden APIs
+* Obfuscated routes
+
+==================================================
+🔎 SEARCH & PERFORMANCE FEATURES
+================================
+
+Add:
+
+* Instant anime search
+* Genre filters
+* Lazy loading
+* Pagination
+* Infinite scrolling
+* Optimized API routes
+* Dynamic metadata
+* SEO optimization
+* Mobile optimization
+* CDN-ready assets
+
+==================================================
+🎨 UI/UX FEATURES
+=================
+
+Add:
+
+* Glassmorphism cards
+* Animated navbar
+* Toast notifications
+* Loading skeletons
+* Anime banners slider
+* Responsive sidebar
+* Smooth hover animations
+* Dynamic gradients
+* Premium buttons
+* Motion animations
+
+==================================================
+📂 DATABASE COLLECTIONS
+=======================
+
+MongoDB Collections:
+
+* users
+* anime
+* episodes
+* sessions
+* analytics
+* solveLinks
+* admins
+* payments
+* premiumPlans
+* activityLogs
+
+==================================================
+📁 REQUIRED GENERATED FILES
+===========================
+
+Generate COMPLETE production-ready project including:
+
+* Frontend
+* Backend
+* MongoDB models
+* API routes
+* Middleware
+* Authentication system
+* Admin dashboard
+* Anime CMS
+* Redirect protection system
+* Solve link system
+* Premium payment page
+* Telegram integration
+* Tailwind config
+* Vercel deployment config
+* README.md
+* .env.example
+
+==================================================
+🎯 FINAL OBJECTIVE
+==================
+
+Build a highly advanced premium anime access platform that:
+
+* Works perfectly on Vercel
+* Uses MongoDB Atlas securely
+* Protects episode destination links
+* Prevents account sharing
+* Tracks all user activities
+* Allows admin full control
+* Restricts Solve Link page for Indian users
+* Supports premium-only access
+* Looks futuristic and professional
+* Is scalable, optimized, and production-ready.
