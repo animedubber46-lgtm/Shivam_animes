@@ -3,7 +3,7 @@ import { requireAdmin } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
-const TMDB_TOKEN = process.env.TMDB_READ_ACCESS_TOKEN;
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const MAL_CLIENT_ID = process.env.MAL_CLIENT_ID;
 const TMDB_IMG = "https://image.tmdb.org/t/p/original";
 const TMDB_IMG_BANNER = "https://image.tmdb.org/t/p/original";
@@ -18,18 +18,13 @@ interface PosterResult {
 }
 
 async function searchTMDB(name: string): Promise<PosterResult[]> {
-  if (!TMDB_TOKEN) return [];
+  if (!TMDB_API_KEY) return [];
   const results: PosterResult[] = [];
 
+  const q = encodeURIComponent(name);
   const [tvRes, movieRes] = await Promise.allSettled([
-    fetch(
-      `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(name)}&language=en-US&page=1`,
-      { headers: { Authorization: `Bearer ${TMDB_TOKEN}`, "Content-Type": "application/json" } }
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(name)}&language=en-US&page=1`,
-      { headers: { Authorization: `Bearer ${TMDB_TOKEN}`, "Content-Type": "application/json" } }
-    ),
+    fetch(`https://api.themoviedb.org/3/search/tv?query=${q}&language=en-US&page=1&api_key=${TMDB_API_KEY}`),
+    fetch(`https://api.themoviedb.org/3/search/movie?query=${q}&language=en-US&page=1&api_key=${TMDB_API_KEY}`),
   ]);
 
   if (tvRes.status === "fulfilled" && tvRes.value.ok) {
