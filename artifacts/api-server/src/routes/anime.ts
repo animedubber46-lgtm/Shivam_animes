@@ -66,7 +66,7 @@ router.get("/anime", async (req, res): Promise<void> => {
 });
 
 router.get("/anime/featured", async (_req, res): Promise<void> => {
-  const anime = await Anime.find().sort({ viewCount: -1 }).limit(8);
+  const anime = await Anime.find().sort({ updatedAt: -1 }).limit(8);
   const episodeCounts = await Episode.aggregate([
     { $match: { animeId: { $in: anime.map((a) => a._id) } } },
     { $group: { _id: "$animeId", count: { $sum: 1 } } },
@@ -77,7 +77,7 @@ router.get("/anime/featured", async (_req, res): Promise<void> => {
 });
 
 router.get("/anime/recent", async (_req, res): Promise<void> => {
-  const anime = await Anime.find().sort({ createdAt: -1 }).limit(12);
+  const anime = await Anime.find().sort({ updatedAt: -1 }).limit(12);
   const episodeCounts = await Episode.aggregate([
     { $match: { animeId: { $in: anime.map((a) => a._id) } } },
     { $group: { _id: "$animeId", count: { $sum: 1 } } },

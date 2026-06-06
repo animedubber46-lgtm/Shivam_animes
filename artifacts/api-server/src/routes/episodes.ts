@@ -52,10 +52,14 @@ router.post("/anime/:animeId/episodes", requireAdmin, async (req, res): Promise<
 
   const episode = await Episode.create({ ...parsed.data, animeId });
 
-  // Auto-complete: if episode title contains "complete" (any case), mark anime as completed
-  if (/complete/i.test(parsed.data.title)) {
-    await Anime.findByIdAndUpdate(animeId, { status: "completed" });
-  }
+  // Touch anime updatedAt so it rises to top of featured/recent lists
+  // Auto-complete: if episode title contains "complete", also mark anime as completed
+  await Anime.findByIdAndUpdate(
+    animeId,
+    /complete/i.test(parsed.data.title)
+      ? { status: "completed", updatedAt: new Date() }
+      : { updatedAt: new Date() }
+  );
 
   res.status(201).json({
     id: String(episode._id),
@@ -83,10 +87,13 @@ router.patch("/anime/:animeId/episodes/:episodeId", requireAdmin, async (req, re
     return;
   }
 
-  // Auto-complete: if updated title contains "complete", mark anime as completed
-  if (parsed.data.title && /complete/i.test(parsed.data.title)) {
-    await Anime.findByIdAndUpdate(episode.animeId, { status: "completed" });
-  }
+  // Touch anime updatedAt + auto-complete if title contains "complete"
+  await Anime.findByIdAndUpdate(
+    episode.animeId,
+    parsed.data.title && /complete/i.test(parsed.data.title)
+      ? { status: "completed", updatedAt: new Date() }
+      : { updatedAt: new Date() }
+  );
 
   res.json({
     id: String(episode._id),
