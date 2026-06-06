@@ -11,7 +11,7 @@ export default function AnimeDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const [, setLocation] = useLocation();
-  const { user, isPremium } = useAuth();
+  const { user, isPremium, isAdmin } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -27,7 +27,7 @@ export default function AnimeDetailPage() {
 
   const handleAccess = (episodeId: string) => {
     if (!user) { setLocation("/login"); return; }
-    if (!isPremium) { setLocation("/premium"); return; }
+    if (!isPremium && !isAdmin) { setLocation("/premium"); return; }
     accessMutation.mutate({ episodeId }, {
       onSuccess: (data) => { window.location.href = data.redirectUrl; },
       onError: (err: any) => {
@@ -133,7 +133,12 @@ export default function AnimeDetailPage() {
             <div className="glass-panel rounded-xl p-8 text-center text-muted-foreground border border-white/5">
               No episodes available yet.
             </div>
-          ) : !isPremium && user ? (
+          ) : !user ? (
+            <div className="glass-panel rounded-xl p-8 text-center border border-white/5">
+              <p className="text-muted-foreground text-sm mb-4">Login to access episodes.</p>
+              <button onClick={() => setLocation("/login")} className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-all" data-testid="btn-login-to-watch">Login</button>
+            </div>
+          ) : !isPremium && !isAdmin ? (
             <div className="glass-panel rounded-xl p-8 text-center border border-yellow-500/20">
               <Crown size={36} className="text-yellow-400 mx-auto mb-3" />
               <h3 className="text-lg font-bold text-white mb-2">Premium Required</h3>
@@ -141,11 +146,6 @@ export default function AnimeDetailPage() {
               <button onClick={() => setLocation("/premium")} className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-xl transition-all" data-testid="btn-upgrade-premium">
                 Upgrade Now
               </button>
-            </div>
-          ) : !user ? (
-            <div className="glass-panel rounded-xl p-8 text-center border border-white/5">
-              <p className="text-muted-foreground text-sm mb-4">Login to access episodes.</p>
-              <button onClick={() => setLocation("/login")} className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-all" data-testid="btn-login-to-watch">Login</button>
             </div>
           ) : (
             <div className="space-y-2">

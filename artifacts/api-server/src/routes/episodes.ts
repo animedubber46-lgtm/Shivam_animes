@@ -51,6 +51,12 @@ router.post("/anime/:animeId/episodes", requireAdmin, async (req, res): Promise<
   }
 
   const episode = await Episode.create({ ...parsed.data, animeId });
+
+  // Auto-complete: if episode title contains "complete" (any case), mark anime as completed
+  if (/complete/i.test(parsed.data.title)) {
+    await Anime.findByIdAndUpdate(animeId, { status: "completed" });
+  }
+
   res.status(201).json({
     id: String(episode._id),
     animeId: String(episode.animeId),
@@ -75,6 +81,11 @@ router.patch("/anime/:animeId/episodes/:episodeId", requireAdmin, async (req, re
   if (!episode) {
     res.status(404).json({ error: "Episode not found" });
     return;
+  }
+
+  // Auto-complete: if updated title contains "complete", mark anime as completed
+  if (parsed.data.title && /complete/i.test(parsed.data.title)) {
+    await Anime.findByIdAndUpdate(episode.animeId, { status: "completed" });
   }
 
   res.json({
