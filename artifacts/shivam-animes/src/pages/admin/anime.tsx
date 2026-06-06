@@ -327,7 +327,7 @@ export default function AdminAnimePage() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") ?? "" : "";
+  const token = typeof window !== "undefined" ? localStorage.getItem("shivam_token") ?? "" : "";
 
   const { data, isLoading } = useListAnime(
     { search: search || undefined, page, limit: 20 },
