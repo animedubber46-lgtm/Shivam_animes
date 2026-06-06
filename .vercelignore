@@ -1,0 +1,8 @@
+node_modules
+.pnpm-store
+artifacts/api-server/dist
+artifacts/shivam-animes/node_modules
+.git
+*.log
+attached_assets
+artifacts/mockup-sandbox

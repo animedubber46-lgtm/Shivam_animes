@@ -5,17 +5,10 @@ import rateLimit from "express-rate-limit";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
-import { connectDB } from "./lib/mongodb";
 
 const app: Express = express();
 
 app.set("trust proxy", 1);
-
-// Connect to MongoDB
-connectDB().catch((err) => {
-  logger.error({ err }, "Failed to connect to MongoDB");
-  process.exit(1);
-});
 
 app.use(
   pinoHttp({
