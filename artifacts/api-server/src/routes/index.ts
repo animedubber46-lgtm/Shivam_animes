@@ -7,6 +7,7 @@ import episodesRouter from "./episodes";
 import solveLinksRouter from "./solveLinks";
 import userFeaturesRouter from "./userFeatures";
 import analyticsRouter from "./analytics";
+import posterSearchRouter from "./posterSearch";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(episodesRouter);
 router.use(solveLinksRouter);
 router.use(userFeaturesRouter);
 router.use(analyticsRouter);
+router.use(posterSearchRouter);
 
 export default router;
